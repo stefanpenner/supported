@@ -52,8 +52,9 @@ interface CustomPolicy extends Policy {
 }
 
 interface PolicyConfiguration {
-  primary?: PrimaryPolicy
-  custom?: CustomPolicy[]
+  primary?: PrimaryPolicy;
+  custom?: CustomPolicy[];
+  ignorePrereleases?: boolean;
 }
 ```
 
@@ -69,6 +70,10 @@ We should evaluate the config file up front and throw if there are conflicts. We
 This configuration is designed to be used when rolling out a support policy. If you were to simply turn on a support policy, for example on `July 1st 2021`, and package `foo` had released version `2.0.0` on `August 1st 2020`, than consumers of `foo` still on `foo@1.x` would only have 1 quarter to upgrade `foo` from `1.x` to `2.x`. In this scenario, you would want to set `effectiveReleaseDate` to `7/1/2021`, which will cause the support policy tool to act as if all dependency versions were released on that that date, meaning that consumers would not need to upgrade to `2.x` until `10/1/2022`, giving them 4 full quarters to upgrade to a major version, which is the intent of the policy.
 
 The `effectiveReleaseDate` in a custom policy takes precedence over the primary `effectiveReleaseDate`, for the packages specified in the given custom policy. This allows a policy owner to "un-ignore" a package without suddenly requiring everyone to upgrade immediately who isn't on the latest version of the ignored package.
+
+### `ignorePrereleases`
+
+By default, the latest `major`/`minor`/`patch` version is tagged in the public npm repository as the latest version, ignoring any prereleases. However, proprietary, private package repositories sometimes will consider the highest version to be the latest, including prereleases, like beta versions. `ignorePrereleases` lets you always ignore `prerelease`, `prepatch`, and `preminor` versions, regardless of the repository `latest` tag. By ignore, we mean, the support policy will never ask you to upgrade to a `prerelease`, `prepatch`, or `preminor` version.
 
 ## Examples
 

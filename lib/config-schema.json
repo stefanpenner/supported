@@ -27,6 +27,9 @@
         },
         "effectiveReleaseDate": { "type": "string" }
       }
-    }}
+    }},
+    "ignorePrereleases": {
+      "type": "boolean"
+    }
   }
 }
